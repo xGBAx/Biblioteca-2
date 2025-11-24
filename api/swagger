@@ -1,0 +1,635 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "API Biblioteca",
+    "description" : "API de biblioteca com clientes, autores, livros, empréstimos e multas.",
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "url" : "http://localhost:3000",
+    "description" : "Servidor local"
+  } ],
+  "paths" : {
+    "/" : {
+      "get" : {
+        "summary" : "Healthcheck da API",
+        "responses" : {
+          "200" : {
+            "description" : "API Biblioteca - OK",
+            "content" : {
+              "text/html" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cliente" : {
+      "get" : {
+        "summary" : "Listar clientes",
+        "responses" : {
+          "200" : {
+            "description" : "Lista de clientes",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Cliente"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "summary" : "Criar cliente",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Cliente"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Cliente criado",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Cliente"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Erro de validação"
+          }
+        }
+      }
+    },
+    "/cliente/{id}" : {
+      "put" : {
+        "summary" : "Atualizar cliente",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Cliente"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Cliente atualizado",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Cliente"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Erro de validação"
+          }
+        }
+      },
+      "delete" : {
+        "summary" : "Excluir cliente",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Cliente excluído"
+          },
+          "400" : {
+            "description" : "Erro na exclusão"
+          }
+        }
+      }
+    },
+    "/autor" : {
+      "get" : {
+        "summary" : "Listar autores",
+        "responses" : {
+          "200" : {
+            "description" : "Lista de autores",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Autor"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "summary" : "Criar autor",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Autor"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Autor criado",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Autor"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Erro de validação"
+          }
+        }
+      }
+    },
+    "/autor/{id}" : {
+      "put" : {
+        "summary" : "Atualizar autor",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Autor"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Autor atualizado"
+          },
+          "400" : {
+            "description" : "Erro de validação"
+          }
+        }
+      },
+      "delete" : {
+        "summary" : "Excluir autor",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Autor excluído"
+          },
+          "400" : {
+            "description" : "Erro na exclusão"
+          }
+        }
+      }
+    },
+    "/livro" : {
+      "get" : {
+        "summary" : "Listar livros",
+        "responses" : {
+          "200" : {
+            "description" : "Lista de livros",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Livro"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "summary" : "Criar livro",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Livro"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Livro criado"
+          },
+          "400" : {
+            "description" : "Erro de validação"
+          }
+        }
+      }
+    },
+    "/livro/{id}" : {
+      "put" : {
+        "summary" : "Atualizar livro",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Livro"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Livro atualizado"
+          },
+          "400" : {
+            "description" : "Erro de validação"
+          }
+        }
+      },
+      "delete" : {
+        "summary" : "Excluir livro",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Livro excluído"
+          },
+          "400" : {
+            "description" : "Erro na exclusão"
+          }
+        }
+      }
+    },
+    "/emprestimo" : {
+      "get" : {
+        "summary" : "Listar empréstimos",
+        "responses" : {
+          "200" : {
+            "description" : "Lista de empréstimos",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Emprestimo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "summary" : "Criar empréstimo",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Emprestimo"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Empréstimo criado"
+          },
+          "400" : {
+            "description" : "Erro de validação"
+          }
+        }
+      }
+    },
+    "/emprestimo/{id}" : {
+      "put" : {
+        "summary" : "Atualizar empréstimo",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Emprestimo"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Empréstimo atualizado"
+          },
+          "400" : {
+            "description" : "Erro de validação"
+          }
+        }
+      },
+      "delete" : {
+        "summary" : "Excluir empréstimo",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Empréstimo excluído"
+          },
+          "400" : {
+            "description" : "Erro na exclusão"
+          }
+        }
+      }
+    },
+    "/multa" : {
+      "get" : {
+        "summary" : "Listar multas",
+        "responses" : {
+          "200" : {
+            "description" : "Lista de multas",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Multa"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "summary" : "Criar multa",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Multa"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Multa criada"
+          },
+          "400" : {
+            "description" : "Erro de validação"
+          }
+        }
+      }
+    },
+    "/multa/{id}" : {
+      "put" : {
+        "summary" : "Atualizar multa",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Multa"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Multa atualizada"
+          },
+          "400" : {
+            "description" : "Erro de validação"
+          }
+        }
+      },
+      "delete" : {
+        "summary" : "Excluir multa",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Multa excluída"
+          },
+          "400" : {
+            "description" : "Erro na exclusão"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Cliente" : {
+        "required" : [ "email", "nome" ],
+        "type" : "object",
+        "properties" : {
+          "_id" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "nome" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "telefone" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Autor" : {
+        "required" : [ "nome" ],
+        "type" : "object",
+        "properties" : {
+          "_id" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "nome" : {
+            "type" : "string"
+          },
+          "nacionalidade" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Livro" : {
+        "required" : [ "autor", "titulo" ],
+        "type" : "object",
+        "properties" : {
+          "_id" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "titulo" : {
+            "type" : "string"
+          },
+          "autor" : {
+            "type" : "string",
+            "description" : "ID do autor"
+          },
+          "anoPublicacao" : {
+            "type" : "integer"
+          },
+          "disponivel" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "Emprestimo" : {
+        "required" : [ "cliente", "dataEmprestimo", "livro" ],
+        "type" : "object",
+        "properties" : {
+          "_id" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "cliente" : {
+            "type" : "string",
+            "description" : "ID do cliente"
+          },
+          "livro" : {
+            "type" : "string",
+            "description" : "ID do livro"
+          },
+          "dataEmprestimo" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "dataDevolucao" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "Multa" : {
+        "required" : [ "cliente", "valor" ],
+        "type" : "object",
+        "properties" : {
+          "_id" : {
+            "type" : "string",
+            "readOnly" : true
+          },
+          "cliente" : {
+            "type" : "string",
+            "description" : "ID do cliente"
+          },
+          "valor" : {
+            "type" : "number"
+          },
+          "motivo" : {
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
+}
