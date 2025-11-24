@@ -1,18 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-
 import cliente from "./cliente.js";
-import livro from "./livro.js";
 import autor from "./autor.js";
-import multa from "./multa.js";
+import livro from "./livro.js";
 import emprestimo from "./emprestimo.js";
-
-// Swagger
-import swaggerUi from "swagger-ui-express";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import multa from "./multa.js";
 
 dotenv.config();
 
@@ -21,16 +14,6 @@ const port = 3000;
 
 app.use(express.json());
 
-// --- Configurar caminho para swagger.json ---
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const swaggerPath = path.join(__dirname, "swagger.json");
-const swaggerDocument = JSON.parse(fs.readFileSync(swaggerPath, "utf8"));
-
-// --- Rota Swagger UI ---
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-// --- Conexão MongoDB ---
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
@@ -42,13 +25,10 @@ const connectDB = async () => {
 
 connectDB();
 
-// Healthcheck raiz
-app.get("/", (req, res) => {
-  res.send("API Biblioteca - OK");
-});
+/* --------------------- CLIENTE --------------------- */
 
-// --------------------- CLIENTE --------------------- //
-app.post("/cliente", async (req, res) => {
+// POST
+app.post('/cliente', async (req, res) => {
   try {
     const novoCliente = await cliente.create(req.body);
     res.status(201).json(novoCliente);
@@ -57,7 +37,8 @@ app.post("/cliente", async (req, res) => {
   }
 });
 
-app.get("/cliente", async (req, res) => {
+// GET ALL
+app.get('/cliente', async (req, res) => {
   try {
     const clientes = await cliente.find();
     res.status(200).json(clientes);
@@ -66,20 +47,29 @@ app.get("/cliente", async (req, res) => {
   }
 });
 
-app.put("/cliente/:id", async (req, res) => {
+// GET POR ID
+app.get('/cliente/:id', async (req, res) => {
   try {
-    const novoCliente = await cliente.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    const c = await cliente.findById(req.params.id);
+    if (!c) return res.status(404).json({ error: "Cliente não encontrado" });
+    res.status(200).json(c);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// PUT
+app.put('/cliente/:id', async (req, res) => {
+  try {
+    const novoCliente = await cliente.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.status(200).json(novoCliente);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 });
 
-app.delete("/cliente/:id", async (req, res) => {
+// DELETE
+app.delete('/cliente/:id', async (req, res) => {
   try {
     const clienteExcluido = await cliente.findByIdAndDelete(req.params.id);
     res.status(200).json(clienteExcluido);
@@ -88,7 +78,8 @@ app.delete("/cliente/:id", async (req, res) => {
   }
 });
 
-// --------------------- AUTOR --------------------- //
+/* --------------------- AUTOR --------------------- */
+
 app.post("/autor", async (req, res) => {
   try {
     const novoAutor = await autor.create(req.body);
@@ -107,13 +98,20 @@ app.get("/autor", async (req, res) => {
   }
 });
 
+// GET POR ID
+app.get("/autor/:id", async (req, res) => {
+  try {
+    const a = await autor.findById(req.params.id);
+    if (!a) return res.status(404).json({ error: "Autor não encontrado" });
+    res.status(200).json(a);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 app.put("/autor/:id", async (req, res) => {
   try {
-    const autorAtualizado = await autor.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    const autorAtualizado = await autor.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.status(200).json(autorAtualizado);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -129,7 +127,8 @@ app.delete("/autor/:id", async (req, res) => {
   }
 });
 
-// --------------------- LIVRO --------------------- //
+/* --------------------- LIVRO --------------------- */
+
 app.post("/livro", async (req, res) => {
   try {
     const novoLivro = await livro.create(req.body);
@@ -148,13 +147,20 @@ app.get("/livro", async (req, res) => {
   }
 });
 
+// GET POR ID
+app.get("/livro/:id", async (req, res) => {
+  try {
+    const l = await livro.findById(req.params.id);
+    if (!l) return res.status(404).json({ error: "Livro não encontrado" });
+    res.status(200).json(l);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 app.put("/livro/:id", async (req, res) => {
   try {
-    const livroAtualizado = await livro.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    const livroAtualizado = await livro.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.status(200).json(livroAtualizado);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -170,7 +176,8 @@ app.delete("/livro/:id", async (req, res) => {
   }
 });
 
-// --------------------- EMPRÉSTIMO --------------------- //
+/* --------------------- EMPRÉSTIMO --------------------- */
+
 app.post("/emprestimo", async (req, res) => {
   try {
     const novoEmprestimo = await emprestimo.create(req.body);
@@ -189,13 +196,20 @@ app.get("/emprestimo", async (req, res) => {
   }
 });
 
+// GET POR ID
+app.get("/emprestimo/:id", async (req, res) => {
+  try {
+    const e = await emprestimo.findById(req.params.id);
+    if (!e) return res.status(404).json({ error: "Empréstimo não encontrado" });
+    res.status(200).json(e);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 app.put("/emprestimo/:id", async (req, res) => {
   try {
-    const emprestimoAtualizado = await emprestimo.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    const emprestimoAtualizado = await emprestimo.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.status(200).json(emprestimoAtualizado);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -204,16 +218,15 @@ app.put("/emprestimo/:id", async (req, res) => {
 
 app.delete("/emprestimo/:id", async (req, res) => {
   try {
-    const emprestimoExcluido = await emprestimo.findByIdAndDelete(
-      req.params.id
-    );
+    const emprestimoExcluido = await emprestimo.findByIdAndDelete(req.params.id);
     res.status(200).json(emprestimoExcluido);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 });
 
-// --------------------- MULTA --------------------- //
+/* --------------------- MULTA --------------------- */
+
 app.post("/multa", async (req, res) => {
   try {
     const novaMulta = await multa.create(req.body);
@@ -232,13 +245,20 @@ app.get("/multa", async (req, res) => {
   }
 });
 
+// GET POR ID
+app.get("/multa/:id", async (req, res) => {
+  try {
+    const m = await multa.findById(req.params.id);
+    if (!m) return res.status(404).json({ error: "Multa não encontrada" });
+    res.status(200).json(m);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 app.put("/multa/:id", async (req, res) => {
   try {
-    const multaAtualizada = await multa.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    const multaAtualizada = await multa.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.status(200).json(multaAtualizada);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -254,8 +274,8 @@ app.delete("/multa/:id", async (req, res) => {
   }
 });
 
-// --- Start servidor ---
+/* --------------------- SERVER --------------------- */
+
 app.listen(port, () => {
-  console.log(`Servidor rodando em http://localhost:${port}`);
-  console.log(`Swagger em http://localhost:${port}/api-docs`);
+  console.log("Servidor rodando em http://localhost:${port}");
 });
